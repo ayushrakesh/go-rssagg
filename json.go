@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"log"
 	"net/http"
 )
@@ -11,6 +12,7 @@ func respondWithJSON(
 
 	data, err := json.Marshal(payload)
 
+	fmt.Println(data)
 	if err != nil {
 		log.Printf("Failed to marshal response: %v", payload)
 		w.WriteHeader(500)
