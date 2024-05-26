@@ -51,3 +51,25 @@ func (apiCfg *apiConfig) handlerCreateFeedFollow(w http.ResponseWriter, r *http.
 	}
 	respondWithJSON(w, 201, databaseFeedFollowToFeedFollow(feedFollow))
 }
+
+func (apiCfg *apiConfig) handlerGetFeedFollow(w http.ResponseWriter, r *http.Request) {
+	apiKey, err := auth.GetAPIKey(r.Header)
+	if err != nil {
+		respondWithError(w, 403, fmt.Sprintf("Auth error- %s", err))
+		return
+	}
+	user, er := apiCfg.DB.GetUserByAPIKey(r.Context(), apiKey)
+	if er != nil {
+		respondWithError(w, 400, fmt.Sprintf("Couldn't found user with APIKey- %v", er))
+		return
+	}
+	userId := user.ID
+
+	feedFollows, errr := apiCfg.DB.GetFeedFollows(r.Context(), userId)
+	if errr != nil {
+		respondWithError(w, 400, fmt.Sprintf("Couldn't get FeedFollows- %v", errr))
+		return
+	}
+
+	respondWithJSON(w, 200, databaseFeedFollowsToFeedFollows(feedFollows))
+}
