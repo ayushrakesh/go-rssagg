@@ -20,6 +20,13 @@ type apiConfig struct {
 
 func main() {
 
+	feed, errr := urlToFeed("https://wagslane.dev/index.xml")
+	if errr != nil {
+		log.Fatal("Error occured")
+	}
+
+	fmt.Println(feed)
+
 	godotenv.Load()
 
 	portString := os.Getenv("PORT")
