@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"time"
 
 	"github.com/ayushrakesh/go-rssagg/internal/database"
 	"github.com/go-chi/chi"
@@ -19,13 +20,6 @@ type apiConfig struct {
 }
 
 func main() {
-
-	feed, errr := urlToFeed("https://wagslane.dev/index.xml")
-	if errr != nil {
-		log.Fatal("Error occured")
-	}
-
-	fmt.Println(feed)
 
 	godotenv.Load()
 
@@ -46,9 +40,12 @@ func main() {
 		log.Fatal("Can't connect to the database!")
 	}
 
+	db := database.New(conn)
 	apiCfg := apiConfig{
-		DB: database.New(conn),
+		DB: db,
 	}
+
+	go startScraping(db, 10, time.Minute)
 
 	router := chi.NewRouter()
 
