@@ -26,14 +26,11 @@ func startScraping(db *database.Queries, concurrency int, timeBetweenFetch time.
 
 		for _, feed := range feeds {
 			wg.Add(1)
-
 			go scrapeFeed(db, feed, &wg)
 		}
 
 		wg.Wait()
-
 	}
-
 }
 
 func scrapeFeed(db *database.Queries, feed database.Feed, wg *sync.WaitGroup) {
